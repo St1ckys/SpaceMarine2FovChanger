@@ -792,7 +792,7 @@ namespace FOVCHANGER
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
-            this.Text = "Space Marine II - FOV Changer v0.1 | by St1cky";
+            this.Text = "Space Marine II - FOV Changer v0.1a | by St1cky";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
