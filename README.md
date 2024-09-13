@@ -28,7 +28,8 @@ When using Restore, you need to manually rename default_other.pak.cache.DISABLED
 
 First Release:
 
-![image](https://github.com/user-attachments/assets/38d065dc-5f48-4ebb-a840-6017f53582f8)
+![image](https://github.com/user-attachments/assets/eae3a232-dd15-4236-aefe-a81a114689fa)
+
 
 v0.1a:
 
