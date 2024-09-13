@@ -1,0 +1,24 @@
+name: Create Release
+
+on:
+  push:
+    tags:
+      - 'v*.*[a-z]*' # Matches tags like v0.1, v0.1a, v1.0b, etc.
+
+jobs:
+  release:
+    runs-on: windows-latest # Change to Windows environment
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Create ZIP file
+        run: powershell Compress-Archive -Path * -DestinationPath source-code.zip # Uses PowerShell for Windows
+
+      - name: Upload release asset
+        uses: softprops/action-gh-release@v1
+        with:
+          files: source-code.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
