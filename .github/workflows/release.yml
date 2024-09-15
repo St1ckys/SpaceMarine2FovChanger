@@ -7,17 +7,17 @@ on:
 
 jobs:
   release:
-    runs-on: windows-latest # Change to Windows environment
+    runs-on: windows-latest
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3 # Updated to latest version
 
       - name: Create ZIP file
-        run: powershell Compress-Archive -Path * -DestinationPath source-code.zip # Uses PowerShell for Windows
+        run: powershell Compress-Archive -Path * -DestinationPath source-code.zip
 
       - name: Upload release asset
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v1 # Ensure this is the latest version
         with:
           files: source-code.zip
         env:
