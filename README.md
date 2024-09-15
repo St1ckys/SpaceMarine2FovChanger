@@ -8,12 +8,14 @@ A Patcher that modifies .sso files from .pak (Archive Files) to change Field of 
 
 ## Instructions
 
-1. Backup the File (default_other.pak) per GUI or manuell,by renaming to "default_other.pak.BACKUP"
+0. Download the Application and Open it. ( Go to Releases and Download SpaceMarine.2.-.Fov.Changer.v0.1b.zip, what is already compiled. )
+   Here DirectLink: [SpaceMarine.2.-.Fov.Changer.v0.1b.zip](https://github.com/St1ckys/SpaceMarine2FovChanger/releases/download/v0.1b/SpaceMarine.2.-.Fov.Changer.v0.1b.zip)
+2. Backup the File (default_other.pak) per GUI or manuell,by renaming to "default_other.pak.BACKUP"
 Path:
 ```
 "C:\Program Files (x86)\Steam\steamapps\common\Space Marine 2\client_pc\root\paks\client\default\default_other.pak"
 ```
-2. Disable Cache to prevent, Bug Error on start, by renaming it.
+2. Disable Cache to prevent, Bug Error while starting Space Marine 2, by renaming it.
 Path:
 ```
 "C:\Program Files (x86)\Steam\steamapps\common\Space Marine 2\client_pc\root\paks\client\default\default_other.pak.cache"
