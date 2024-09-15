@@ -97,17 +97,22 @@ namespace FOVCHANGER
             this.button5 = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
+            this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.label26 = new System.Windows.Forms.Label();
+            this.textBox26 = new System.Windows.Forms.TextBox();
+            this.button6 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox5.SuspendLayout();
             this.panel1.SuspendLayout();
+            this.groupBox6.SuspendLayout();
             this.SuspendLayout();
             // 
             // textBox1
             // 
-            this.textBox1.BackColor = System.Drawing.SystemColors.Control;
+            this.textBox1.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.textBox1.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.textBox1.Location = new System.Drawing.Point(9, 27);
@@ -166,7 +171,7 @@ namespace FOVCHANGER
             this.groupBox1.Controls.Add(this.textBox3);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.textBox2);
-            this.groupBox1.Location = new System.Drawing.Point(10, 314);
+            this.groupBox1.Location = new System.Drawing.Point(10, 404);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(291, 158);
             this.groupBox1.TabIndex = 6;
@@ -650,7 +655,7 @@ namespace FOVCHANGER
             this.groupBox3.Controls.Add(this.textBox6);
             this.groupBox3.Controls.Add(this.label11);
             this.groupBox3.Controls.Add(this.textBox11);
-            this.groupBox3.Location = new System.Drawing.Point(10, 109);
+            this.groupBox3.Location = new System.Drawing.Point(10, 199);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(291, 199);
             this.groupBox3.TabIndex = 4;
@@ -666,7 +671,7 @@ namespace FOVCHANGER
             this.groupBox4.Controls.Add(this.textBox15);
             this.groupBox4.Controls.Add(this.label20);
             this.groupBox4.Controls.Add(this.textBox20);
-            this.groupBox4.Location = new System.Drawing.Point(307, 109);
+            this.groupBox4.Location = new System.Drawing.Point(307, 199);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(209, 134);
             this.groupBox4.TabIndex = 48;
@@ -686,7 +691,7 @@ namespace FOVCHANGER
             this.groupBox5.Controls.Add(this.label14);
             this.groupBox5.Controls.Add(this.textBox14);
             this.groupBox5.Controls.Add(this.textBox21);
-            this.groupBox5.Location = new System.Drawing.Point(307, 249);
+            this.groupBox5.Location = new System.Drawing.Point(307, 339);
             this.groupBox5.Name = "groupBox5";
             this.groupBox5.Size = new System.Drawing.Size(209, 223);
             this.groupBox5.TabIndex = 49;
@@ -694,7 +699,7 @@ namespace FOVCHANGER
             // 
             // progressBar
             // 
-            this.progressBar.Location = new System.Drawing.Point(10, 479);
+            this.progressBar.Location = new System.Drawing.Point(10, 585);
             this.progressBar.Name = "progressBar";
             this.progressBar.Size = new System.Drawing.Size(506, 23);
             this.progressBar.Step = 1;
@@ -726,6 +731,7 @@ namespace FOVCHANGER
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.panel1.Controls.Add(this.groupBox6);
             this.panel1.Controls.Add(this.button5);
             this.panel1.Controls.Add(this.button4);
             this.panel1.Controls.Add(this.button3);
@@ -736,7 +742,7 @@ namespace FOVCHANGER
             this.panel1.Controls.Add(this.checkBoxDefaults);
             this.panel1.Location = new System.Drawing.Point(3, 4);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(523, 511);
+            this.panel1.Size = new System.Drawing.Size(523, 614);
             this.panel1.TabIndex = 54;
             // 
             // button5
@@ -775,12 +781,52 @@ namespace FOVCHANGER
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
+            // groupBox6
+            // 
+            this.groupBox6.Controls.Add(this.button6);
+            this.groupBox6.Controls.Add(this.label26);
+            this.groupBox6.Controls.Add(this.textBox26);
+            this.groupBox6.Location = new System.Drawing.Point(7, 103);
+            this.groupBox6.Name = "groupBox6";
+            this.groupBox6.Size = new System.Drawing.Size(506, 88);
+            this.groupBox6.TabIndex = 56;
+            this.groupBox6.TabStop = false;
+            // 
+            // label26
+            // 
+            this.label26.AutoSize = true;
+            this.label26.BackColor = System.Drawing.Color.Transparent;
+            this.label26.Location = new System.Drawing.Point(7, 41);
+            this.label26.Name = "label26";
+            this.label26.Size = new System.Drawing.Size(32, 13);
+            this.label26.TabIndex = 9;
+            this.label26.Text = "Path:";
+            // 
+            // textBox26
+            // 
+            this.textBox26.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.textBox26.Location = new System.Drawing.Point(10, 57);
+            this.textBox26.Name = "textBox26";
+            this.textBox26.Size = new System.Drawing.Size(490, 20);
+            this.textBox26.TabIndex = 8;
+            // 
+            // button6
+            // 
+            this.button6.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button6.Location = new System.Drawing.Point(10, 15);
+            this.button6.Name = "button6";
+            this.button6.Size = new System.Drawing.Size(75, 23);
+            this.button6.TabIndex = 10;
+            this.button6.Text = "Update Path";
+            this.button6.UseVisualStyleBackColor = true;
+            this.button6.Click += new System.EventHandler(this.button6_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.ClientSize = new System.Drawing.Size(529, 518);
+            this.ClientSize = new System.Drawing.Size(528, 618);
             this.Controls.Add(this.progressBar);
             this.Controls.Add(this.groupBox5);
             this.Controls.Add(this.groupBox4);
@@ -805,6 +851,8 @@ namespace FOVCHANGER
             this.groupBox5.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            this.groupBox6.ResumeLayout(false);
+            this.groupBox6.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -876,6 +924,10 @@ namespace FOVCHANGER
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.GroupBox groupBox6;
+        private System.Windows.Forms.Label label26;
+        private System.Windows.Forms.TextBox textBox26;
+        private System.Windows.Forms.Button button6;
     }
 }
 

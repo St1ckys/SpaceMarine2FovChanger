@@ -10,8 +10,17 @@ namespace FOVCHANGER
 {
     public partial class Form1 : Form
     {
-        private string pakFilePath = @"C:\Program Files (x86)\Steam\steamapps\common\Space Marine 2\client_pc\root\paks\client\default\default_other.pak";
-        private string tempExtractedFilePath = Path.Combine(Path.GetTempPath(), "temp.sso"); // Temporary extracted file path
+        //private string pakFilePath = @"C:\Program Files (x86)\Steam\steamapps\common\Space Marine 2\client_pc\root\paks\client\default\default_other.pak";
+        //private string tempExtractedFilePath = Path.Combine(Path.GetTempPath(), "temp.sso"); // Temporary extracted file path
+
+        private string basePath;
+        private string pakFilePath;
+        private string tempExtractedFilePath;
+        private string cacheFilePath;
+        private string backupFilePath;
+        private string originalFilePath;
+
+
 
         // Define file paths and default values for each .sso file
         private Dictionary<string, List<string>> presets = new Dictionary<string, List<string>>
@@ -66,26 +75,171 @@ namespace FOVCHANGER
             checkBoxPreset1.CheckedChanged += checkBox_CheckedChanged;
             checkBoxPreset2.CheckedChanged += checkBox_CheckedChanged;
 
-            // Check if the backup file exists and set the button state
+            
+            
+            // Initialize base path
+            InitializeBasePath();
+            // Initialize paths
+            InitializePaths();
+        }
+
+        private void InitializePaths()
+        {
+
+            // Default executable path
+            //string defaultExecutablePath = @"C:\Program Files (x86)\Steam\steamapps\common\Space Marine 2\Warhammer 40000 Space Marine 2.exe";
+
+            basePath = textBox26.Text.Trim(); // Get the base path from the TextBox
+
+            if (string.IsNullOrEmpty(basePath) || !Directory.Exists(basePath))
+            {
+                /*MessageBox.Show("Invalid installation path. Please specify a valid path.");*/
+                return;
+            }
+
+            pakFilePath = Path.Combine(basePath, @"client_pc\root\paks\client\default\default_other.pak");
+            tempExtractedFilePath = Path.Combine(Path.GetTempPath(), "temp.sso"); // Temporary extracted file path
+            cacheFilePath = Path.Combine(basePath, @"client_pc\root\paks\client\default\default_other.pak.cache");
+            backupFilePath = Path.Combine(basePath, @"client_pc\root\paks\client\default\default_other.pak.BACKUP");
+            originalFilePath = Path.Combine(basePath, @"client_pc\root\paks\client\default\default_other.pak");
+
             UpdateBackupButtonState();
             UpdateRestoreButtonState();
             UpdateCacheButtonState();
         }
+
+        private void InitializeBasePath()
+        {
+            // Default executable path
+            string defaultExecutablePath = @"C:\Program Files (x86)\Steam\steamapps\common\Space Marine 2\Warhammer 40000 Space Marine 2.exe";
+            string defaultBasePath = @"C:\Program Files (x86)\Steam\steamapps\common\Space Marine 2";
+
+            // Check if the executable exists
+            if (File.Exists(defaultExecutablePath))
+            {
+                // Set the base path to the directory of the executable
+                string basePath = Path.GetDirectoryName(defaultExecutablePath);
+                textBox26.Text = basePath;
+            }
+            else
+            {
+                // Try to find the base path by searching all partitions
+                string foundPath = SearchForInstallationFolder("Space Marine 2");
+
+                if (!string.IsNullOrEmpty(foundPath))
+                {
+                    textBox26.Text = foundPath;
+                }
+                else
+                {
+                    // Prompt the user to specify the base path
+                    using (FolderBrowserDialog folderDialog = new FolderBrowserDialog())
+                    {
+                        folderDialog.Description = "Select the installation folder for Space Marine 2";
+
+                        DialogResult result = folderDialog.ShowDialog();
+                        if (result == DialogResult.OK)
+                        {
+                            string userSpecifiedPath = folderDialog.SelectedPath;
+                            if (Directory.Exists(userSpecifiedPath))
+                            {
+                                textBox26.Text = userSpecifiedPath;
+                            }
+                            else
+                            {
+                                MessageBox.Show("The specified path does not exist.");
+                            }
+                        }
+                        else
+                        {
+                            MessageBox.Show("No installation folder selected.");
+                            textBox26.Text = defaultBasePath;
+                            // Optionally exit the application if no path is selected
+                            // Application.Exit();
+                        }
+                    }
+                }
+            }
+
+            // Initialize paths and button states after setting the base path
+            InitializePaths();
+            UpdateBackupButtonState();
+            UpdateRestoreButtonState();
+            UpdateCacheButtonState();
+        }
+
+        // Method to search for the installation folder on all partitions
+        private string SearchForInstallationFolder(string relativePath)
+        {
+            foreach (string drive in Environment.GetLogicalDrives())
+            {
+                try
+                {
+                    string searchPath = Path.Combine(drive, relativePath);
+                    if (Directory.Exists(searchPath))
+                    {
+                        return Path.GetDirectoryName(searchPath);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Handle exceptions (e.g., access denied) and continue searching
+                    Console.WriteLine($"Error accessing drive {drive}: {ex.Message}");
+                }
+            }
+            return null;
+        }
+
+        private void textBox26_TextChanged(object sender, EventArgs e)
+        {
+            InitializePaths();
+        }
+
         private void UpdateCacheButtonState()
         {
-            string cacheFilePath = @"C:\Program Files (x86)\Steam\steamapps\common\Space Marine 2\client_pc\root\paks\client\default\default_other.pak.cache";
-            button5.Enabled = File.Exists(cacheFilePath); // Enable if cache file exists, disable otherwise
+            // Construct the cache file paths using the base path
+            string cacheFilePath = Path.Combine(basePath, @"client_pc\root\paks\client\default\default_other.pak.cache");
+            string disabledCacheFilePath = cacheFilePath + ".DISABLED";
+
+            // Check the existence of the files
+            bool cacheFileExists = File.Exists(cacheFilePath);
+            bool disabledCacheFileExists = File.Exists(disabledCacheFilePath);
+
+            // Update the button state based on the file existence
+            if (disabledCacheFileExists)
+            {
+                // Cache is disabled
+                button5.Text = "Enable Cache";
+                button5.ForeColor = System.Drawing.Color.Green;
+            }
+            else if (cacheFileExists)
+            {
+                // Cache is enabled
+                button5.Text = "Disable Cache";
+                button5.ForeColor = System.Drawing.Color.DarkRed;
+            }
+            else
+            {
+                // Cache file is missing
+                button5.Text = "Cache File Missing";
+                button5.ForeColor = System.Drawing.Color.Gray;
+            }
+
+            // Optionally disable the button if neither file is present
+            button5.Enabled = cacheFileExists || disabledCacheFileExists;
         }
 
         private void UpdateBackupButtonState()
         {
-            string backupFilePath = @"C:\Program Files (x86)\Steam\steamapps\common\Space Marine 2\client_pc\root\paks\client\default\default_other.pak.BACKUP";
+            // Construct the backup file path using the base path
+            string backupFilePath = Path.Combine(basePath, @"client_pc\root\paks\client\default\default_other.pak.BACKUP");
             button3.Enabled = !File.Exists(backupFilePath); // Enable if backup file does not exist, disable otherwise
         }
 
         private void UpdateRestoreButtonState()
         {
-            string backupFilePath = @"C:\Program Files (x86)\Steam\steamapps\common\Space Marine 2\client_pc\root\paks\client\default\default_other.pak.BACKUP";
+            // Construct the backup file path using the base path
+            string backupFilePath = Path.Combine(basePath, @"client_pc\root\paks\client\default\default_other.pak.BACKUP");
             button4.Enabled = File.Exists(backupFilePath); // Enable if backup file exists, disable otherwise
         }
 
@@ -387,44 +541,62 @@ namespace FOVCHANGER
 
         private void button3_Click(object sender, EventArgs e)
         {
+            // Get the base path from the TextBox
+            string basePath = textBox26.Text.Trim();
+
+            // Check if the base path is valid
+            if (string.IsNullOrEmpty(basePath) || !Directory.Exists(basePath))
             {
-                string sourceFilePath = @"C:\Program Files (x86)\Steam\steamapps\common\Space Marine 2\client_pc\root\paks\client\default\default_other.pak";
-                string backupFilePath = @"C:\Program Files (x86)\Steam\steamapps\common\Space Marine 2\client_pc\root\paks\client\default\default_other.pak.BACKUP";
+                MessageBox.Show("Invalid installation path. Please specify a valid path.");
+                return;
+            }
 
-                try
+            // Construct the source and backup file paths using the base path
+            string sourceFilePath = Path.Combine(basePath, @"client_pc\root\paks\client\default\default_other.pak");
+            string backupFilePath = Path.Combine(basePath, @"client_pc\root\paks\client\default\default_other.pak.BACKUP");
+
+            try
+            {
+                // Check if the backup already exists
+                if (File.Exists(backupFilePath))
                 {
-                    // Check if backup already exists
-                    if (File.Exists(backupFilePath))
-                    {
-                        MessageBox.Show("Backup file already exists.");
-                        return; // Exit if backup already exists
-                    }
-
-                    // Perform the backup
-                    File.Copy(sourceFilePath, backupFilePath);
-                    MessageBox.Show("Backup created successfully.");
-
-                    // Disable the backup button as the backup now exists
-                    UpdateBackupButtonState();
+                    MessageBox.Show("Backup file already exists.");
+                    return; // Exit if backup already exists
                 }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Error creating backup: {ex.Message}");
-                }
+
+                // Perform the backup
+                File.Copy(sourceFilePath, backupFilePath);
+                MessageBox.Show("Backup created successfully.");
+
+                // Disable the backup button as the backup now exists
+                UpdateBackupButtonState();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error creating backup: {ex.Message}");
             }
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
-            string backupFilePath = @"C:\Program Files (x86)\Steam\steamapps\common\Space Marine 2\client_pc\root\paks\client\default\default_other.pak.BACKUP";
-            string originalFilePath = @"C:\Program Files (x86)\Steam\steamapps\common\Space Marine 2\client_pc\root\paks\client\default\default_other.pak";
+            // Get the base path from the TextBox
+            string basePath = textBox26.Text.Trim();
+
+            // Check if the base path is valid
+            if (string.IsNullOrEmpty(basePath) || !Directory.Exists(basePath))
+            {
+                MessageBox.Show("Invalid installation path. Please specify a valid path.");
+                return;
+            }
+
+            // Construct the file paths using the base path
+            string backupFilePath = Path.Combine(basePath, @"client_pc\root\paks\client\default\default_other.pak.BACKUP");
+            string originalFilePath = Path.Combine(basePath, @"client_pc\root\paks\client\default\default_other.pak");
 
             try
             {
-                // Check if the original file exists
                 if (File.Exists(originalFilePath))
                 {
-                    // Ask user for confirmation to overwrite
                     DialogResult result = MessageBox.Show(
                         "The original file already exists. Do you want to overwrite it?",
                         "Confirm Overwrite",
@@ -433,17 +605,15 @@ namespace FOVCHANGER
 
                     if (result == DialogResult.No)
                     {
-                        return; // Exit if user does not want to overwrite
+                        return;
                     }
                 }
 
-                // Perform the restore by renaming the backup file to the original file
-                File.Delete(originalFilePath); // Delete the original file if it exists
-                File.Move(backupFilePath, originalFilePath); // Rename backup file to original file
+                File.Delete(originalFilePath);
+                File.Move(backupFilePath, originalFilePath);
 
                 MessageBox.Show("File restored successfully.");
 
-                // Update button states
                 UpdateBackupButtonState();
                 UpdateRestoreButtonState();
             }
@@ -455,29 +625,99 @@ namespace FOVCHANGER
 
         private void button5_Click(object sender, EventArgs e)
         {
-            string cacheFilePath = @"C:\Program Files (x86)\Steam\steamapps\common\Space Marine 2\client_pc\root\paks\client\default\default_other.pak.cache";
+            // Get the base path from the TextBox
+            string basePath = textBox26.Text.Trim();
+
+            // Check if the base path is valid
+            if (string.IsNullOrEmpty(basePath) || !Directory.Exists(basePath))
+            {
+                MessageBox.Show("Invalid installation path. Please specify a valid path.");
+                return;
+            }
+
+            // Construct the cache file paths using the base path
+            string cacheFilePath = Path.Combine(basePath, @"client_pc\root\paks\client\default\default_other.pak.cache");
             string disabledCacheFilePath = cacheFilePath + ".DISABLED";
 
             try
             {
-                if (File.Exists(cacheFilePath))
+                // Check if the cache file is disabled
+                if (File.Exists(disabledCacheFilePath))
                 {
-                    // Rename the cache file to .cache.DISABLED
-                    File.Move(cacheFilePath, disabledCacheFilePath);
-                    MessageBox.Show("Cache file disabled successfully.");
-
-                    // Update button state
-                    UpdateCacheButtonState();
+                    // Enable cache by renaming the .DISABLED file back to the original name
+                    File.Move(disabledCacheFilePath, cacheFilePath);
+                    MessageBox.Show("Cache file enabled successfully.");
+                    button5.Text = "Disable Cache";
+                    button5.ForeColor = System.Drawing.Color.DarkRed;
                 }
                 else
                 {
-                    MessageBox.Show("Cache file does not exist.");
+                    // Disable cache by renaming the cache file to .DISABLED
+                    if (File.Exists(cacheFilePath))
+                    {
+                        File.Move(cacheFilePath, disabledCacheFilePath);
+                        MessageBox.Show("Cache file disabled successfully.");
+                        button5.Text = "Enable Cache";
+                        button5.ForeColor = System.Drawing.Color.Green;
+                    }
+                    else
+                    {
+                        MessageBox.Show("Cache file does not exist.");
+                    }
                 }
+
+                // Update the button state after changing the cache file status
+                UpdateCacheButtonState();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error disabling cache file: {ex.Message}");
+                MessageBox.Show($"Error toggling cache file status: {ex.Message}");
             }
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            string newBasePath = textBox26.Text.Trim();
+
+            if (Directory.Exists(newBasePath))
+            {
+                basePath = newBasePath;  // Make sure this assignment is happening
+                UpdatePaths(basePath);  // Ensure paths are updated
+                UpdateCacheButtonState();  // Update the button state
+                UpdateBackupButtonState();  // Update backup button state if needed
+                UpdateRestoreButtonState();  // Update restore button state if needed
+
+                MessageBox.Show($"Path updated successfully. New base path: {basePath}");
+            }
+            else
+            {
+                MessageBox.Show("The specified path does not exist. Please check and try again.");
+            }
+        }
+
+
+
+        private void UpdatePaths(string basePath)
+        {
+            // Update the base path for all file paths
+            pakFilePath = Path.Combine(basePath, @"client_pc\root\paks\client\default\default_other.pak");
+            tempExtractedFilePath = Path.Combine(Path.GetTempPath(), "temp.sso");
+
+            backupFilePath = Path.Combine(basePath, @"client_pc\root\paks\client\default\default_other.pak.BACKUP");
+            originalFilePath = Path.Combine(basePath, @"client_pc\root\paks\client\default\default_other.pak");
+            cacheFilePath = Path.Combine(basePath, @"client_pc\root\paks\client\default\default_other.pak.cache");
+            string disabledCacheFilePath = cacheFilePath + ".DISABLED";
+
+            // Debugging information to verify paths
+            Console.WriteLine($"Backup File Path: {backupFilePath}");
+            Console.WriteLine($"Original File Path: {originalFilePath}");
+            Console.WriteLine($"Cache File Path: {cacheFilePath}");
+            Console.WriteLine($"Disabled Cache File Path: {disabledCacheFilePath}");
+
+            // Update the paths for buttons
+            UpdateBackupButtonState();
+            UpdateRestoreButtonState();
+            UpdateCacheButtonState();
         }
     }
 }
